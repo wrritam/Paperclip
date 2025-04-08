@@ -52,7 +52,7 @@ model Insight {
   statusCodeDistribution Json     // { "200": 45, "500": 5 }
   mostCommonHeaders      Json?    // { "content-type": "application/json" }
   recentOutputs          Json?    // Optional: last 3 JSON responses
- score                  Int      // Performance score (0–100)
+  score                  Int      // Performance score (0–100)
 
   // AI
   aiTips                 Json?    // { "indexSuggestion": "...", "cacheTip": "..." }
