@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  name        String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  requestLogs RequestLog[]
+  insights    Insight[]
+}
+
+model RequestLog {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  method         String   // GET, POST, PUT, etc.
+  url            String
+  status         Int
+  responseTimeMs Int
+  responseSizeKB Float
+  isError        Boolean  @default(false)
+  responseBody   Json?
+  headers        Json?
+  createdAt      DateTime @default(now())
+}
+
+model Insight {
+  id                     String   @id @default(cuid())
+  userId                 String
+  user                   User     @relation(fields: [userId], references: [id])
+  endpoint               String   // "GET /api/products"
+ 
+  // Performance Metrics
+  avgResponseTime        Int      // ms
+  errorRate              Float    // 0.0 - 1.0
+  slowestResponse        Int      // ms
+  avgPayloadSizeKB       Float
+  statusCodeDistribution Json     // { "200": 45, "500": 5 }
+  mostCommonHeaders      Json?    // { "content-type": "application/json" }
+  recentOutputs          Json?    // Optional: last 3 JSON responses
+ score                  Int      // Performance score (0–100)
+
+  // AI
+  aiTips                 Json?    // { "indexSuggestion": "...", "cacheTip": "..." }
+  summary                String   // Human-readable AI summary
+
+  createdAt              DateTime @default(now())
+}
