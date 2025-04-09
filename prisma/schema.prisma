@@ -31,7 +31,7 @@ model RequestLog {
   id             String   @id @default(cuid())
   userId         String
   user           User     @relation(fields: [userId], references: [id])
-  method         String   // GET, POST, PUT, etc.
+  method         String
   url            String
   status         Int
   responseTimeMs Int
@@ -39,6 +39,8 @@ model RequestLog {
   isError        Boolean  @default(false)
   responseBody   Json?
   headers        Json?
+  ipAddress      String?
+  userAgent      String?
   createdAt      DateTime @default(now())
 }
 
