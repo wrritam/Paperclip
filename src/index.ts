@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { errorHandler } from "./middleware/errorHandler";
 import authRouter from "./routes/authRouter";
+import router from "./routes/router";
 
 dotenv.config();
 const app = express();
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/user", router);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -21,10 +21,11 @@ export const authentication = (
   req: CustomRequest,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) {
-    return res.status(401).json({ message: "Access denied" });
+    res.status(401).json({ message: "Access denied" });
+    return;
   }
 
   try {
@@ -33,5 +34,6 @@ export const authentication = (
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
+    return;
   }
 };
