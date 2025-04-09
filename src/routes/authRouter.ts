@@ -8,10 +8,10 @@ import { resetPassword } from "../controllers/auth/reset-password";
 import { verifyUpdation } from "../controllers/auth/verifyUpdate";
 
 authRouter.post("/register", register);
-authRouter.post("/login", login);
 authRouter.post("/verify-registration", verifyRegistration);
+authRouter.post("/login", login);
 authRouter.post("/forgot-password", forgotPassword);
-authRouter.post("/reset-password", resetPassword);
 authRouter.post("/verify-updation", verifyUpdation);
+authRouter.post("/reset-password", resetPassword);
 
 export default authRouter;
