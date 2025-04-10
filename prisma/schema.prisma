@@ -14,7 +14,7 @@ datasource db {
 }
 
 model User {
-  id          Int         @id @default(autoincrement())
+  id          String @id @default(cuid())
   email       String      @unique
   name        String?
   password    String
@@ -23,28 +23,26 @@ model User {
   last_login  String?
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  requests    Requests[]
+  requests    Request[]
 }
 
-model Requests {
-  id        Int         @id @default(autoincrement())
-  userId    Int
+model Request {
+  id        String  @id @default(cuid())
+  userId    String
   method    String
   url       String
   createdAt DateTime    @default(now())
-
   user        User        @relation(fields: [userId], references: [id])
   requestLogs RequestLog[]
   insights    Insight[]
 }
 
 model RequestLog {
-  id         Int       @id @default(autoincrement())
-  requestId  Int
-  request    Requests  @relation(fields: [requestId], references: [id])
-  insightId  Int?
+  id         String     @id @default(cuid())
+  requestId  String
+  request    Request  @relation(fields: [requestId], references: [id])
+  insightId  String?
   insight    Insight?  @relation(fields: [insightId], references: [id])
-
   status         Int
   responseTimeMs Int
   responseSizeKB Float
@@ -57,9 +55,9 @@ model RequestLog {
 }
 
 model Insight {
-  id                     Int         @id @default(autoincrement())
-  requestId              Int
-  request                Requests    @relation(fields: [requestId], references: [id])
+  id                     String @id @default(cuid())
+  requestId              String
+  request                Request    @relation(fields: [requestId], references: [id])
 
   // Performance Metrics
   avgResponseTime        Int         // ms

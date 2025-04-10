@@ -1,25 +1,30 @@
 import prisma from "../db/db.config";
 
-export const getInsights = async (
-  userId: string,
-  method: string,
-  url: string
-) => {
-  const endpoint = `${method.toUpperCase()} ${url}`;
-  const logs = await prisma.requestLog.findMany({
-    where: { userId, method, url },
-    orderBy: { createdAt: "desc" },
-    take: 50, // limit 50 logs for performance
+export const getInsights = async (requestId: string) => {
+  const request = await prisma.request.findUnique({
+    where: { id: requestId },
   });
 
-  if (logs.length < 5) return; // not enough logs yet
+  if (!request) return;
 
-  // Insight Calculations
+  const logs = await prisma.requestLog.findMany({
+    where: { requestId },
+    orderBy: { createdAt: "desc" },
+    take: 50,
+  });
+
+  // Only generate insight after 5 logs
+  if (logs.length < 5) return;
+
+  // Calculate metrics
   const avgResponseTime = Math.round(
     logs.reduce((sum, log) => sum + log.responseTimeMs, 0) / logs.length
   );
+
   const errorRate = logs.filter((log) => log.isError).length / logs.length;
+
   const slowestResponse = Math.max(...logs.map((log) => log.responseTimeMs));
+
   const avgPayloadSizeKB = parseFloat(
     (
       logs.reduce((sum, log) => sum + (log.responseSizeKB || 0), 0) /
@@ -40,7 +45,7 @@ export const getInsights = async (
 
   // Check if Insight already exists
   const existingInsight = await prisma.insight.findFirst({
-    where: { userId, endpoint },
+    where: { requestId },
   });
 
   let returnInsight;
@@ -63,8 +68,7 @@ export const getInsights = async (
   } else {
     returnInsight = await prisma.insight.create({
       data: {
-        userId,
-        endpoint,
+        requestId,
         avgResponseTime,
         errorRate,
         slowestResponse,
@@ -72,8 +76,10 @@ export const getInsights = async (
         statusCodeDistribution,
         mostCommonHeaders,
         recentOutputs,
-        summary: `Performance insight generated for ${endpoint}`,
         score,
+        summary: `Performance insight generated for ${request.method.toUpperCase()} ${
+          request.url
+        }`,
       },
     });
   }
