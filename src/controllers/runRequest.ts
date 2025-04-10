@@ -1,7 +1,7 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import { Request, Response } from "express";
 import prisma from "../db/db.config";
-import { getInsights } from "../services/insights"; // Insight generator
+import { getInsights } from "../services/insights";
 
 const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
 
@@ -25,7 +25,6 @@ export const runRequest = async (
 ): Promise<void> => {
   const { method, url, headers = {}, body = {} } = req.body as RunRequestBody;
 
-  // Validate method and URL
   if (!method || !url) {
     res.status(400).json({ message: "Method and URL are required" });
     return;
@@ -33,12 +32,11 @@ export const runRequest = async (
 
   if (!allowedMethods.includes(method.toUpperCase())) {
     res.status(400).json({
-      message: "Only GET, POST, PUT and DELETE methods are allowed for now",
+      message: "Only GET, POST, PUT, and DELETE methods are allowed for now",
     });
     return;
   }
 
-  // Validate user
   if (!req.user?.email) {
     res.status(401).json({ message: "Unauthorized: No user found" });
     return;
@@ -48,13 +46,8 @@ export const runRequest = async (
     where: { email: req.user.email },
   });
 
-  if (!foundUser) {
-    res.status(404).json({ message: "User not found" });
-    return;
-  }
-
-  if (!foundUser.is_verified) {
-    res.status(403).json({ message: "Please verify your email address" });
+  if (!foundUser || !foundUser.is_verified) {
+    res.status(403).json({ message: "User not verified or not found" });
     return;
   }
 
@@ -64,7 +57,6 @@ export const runRequest = async (
     "";
 
   const userAgent = req.headers["user-agent"] || "unknown";
-
   const startTime = Date.now();
 
   try {
@@ -73,19 +65,36 @@ export const runRequest = async (
       url,
       headers,
       data: ["POST", "PUT"].includes(method.toUpperCase()) ? body : undefined,
-      validateStatus: () => true, // Log all responses
+      validateStatus: () => true,
     });
 
     const responseTime = Date.now() - startTime;
     const responseSizeKB =
       Buffer.byteLength(JSON.stringify(response.data)) / 1024;
 
-    // Save request log
+    // Find or create saved request
+    let savedRequest = await prisma.request.findFirst({
+      where: {
+        userId: foundUser.id,
+        method: method.toUpperCase(),
+        url,
+      },
+    });
+
+    if (!savedRequest) {
+      savedRequest = await prisma.request.create({
+        data: {
+          userId: foundUser.id,
+          method: method.toUpperCase(),
+          url,
+        },
+      });
+    }
+
+    // Create log entry
     await prisma.requestLog.create({
       data: {
-        userId: foundUser.id,
-        method,
-        url,
+        requestId: savedRequest.id,
         status: response.status,
         responseTimeMs: responseTime,
         responseSizeKB: parseFloat(responseSizeKB.toFixed(2)),
@@ -97,12 +106,17 @@ export const runRequest = async (
       },
     });
 
-    // insight create or refine the existing shit
-    const insight = await getInsights(foundUser.id, method, url);
-    console.log("*************************************");
-    console.log(insight);
+    // Check if this is the 5th (or later) log and generate insight
+    const totalLogs = await prisma.requestLog.count({
+      where: { requestId: savedRequest.id },
+    });
 
-    // Response
+    let insight = null;
+    if (totalLogs >= 5) {
+      insight = await getInsights(savedRequest.id);
+    }
+
+    // Return final response
     res.status(200).json({
       status: response.status,
       headers: response.headers,
@@ -116,17 +130,32 @@ export const runRequest = async (
         userAgent,
         timestamp: new Date().toISOString(),
       },
-      insight: insight,
+      insight,
     });
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
 
-    // Log failed request
+    let savedRequest = await prisma.request.findFirst({
+      where: {
+        userId: foundUser.id,
+        method: method.toUpperCase(),
+        url,
+      },
+    });
+
+    if (!savedRequest) {
+      savedRequest = await prisma.request.create({
+        data: {
+          userId: foundUser.id,
+          method: method.toUpperCase(),
+          url,
+        },
+      });
+    }
+
     await prisma.requestLog.create({
       data: {
-        userId: foundUser.id,
-        method,
-        url,
+        requestId: savedRequest.id,
         status: 500,
         responseTimeMs: responseTime,
         responseSizeKB: 0,
@@ -138,6 +167,16 @@ export const runRequest = async (
       },
     });
 
+    // Same logic: try generating insight after 5 logs
+    const totalLogs = await prisma.requestLog.count({
+      where: { requestId: savedRequest.id },
+    });
+
+    let insight = null;
+    if (totalLogs >= 5) {
+      insight = await getInsights(savedRequest.id);
+    }
+
     res.status(500).json({
       message: "Request Failed",
       error: error.message || "Unknown error",
@@ -148,6 +187,7 @@ export const runRequest = async (
         userAgent,
         timestamp: new Date().toISOString(),
       },
+      insight,
     });
   }
 };
