@@ -1,7 +1,15 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import { Request, Response } from "express";
+import prisma from "../db/db.config";
 
 const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
+
+interface CustomRequest extends Request {
+  user?: {
+    id: number;
+    email: string;
+  };
+}
 
 interface RunRequestBody {
   method: string;
@@ -11,28 +19,45 @@ interface RunRequestBody {
 }
 
 export const runRequest = async (
-  req: Request<{}, {}, RunRequestBody>,
+  req: CustomRequest,
   res: Response
 ): Promise<void> => {
-  const { method, url, headers = {}, body = {} } = req.body;
+  const { method, url, headers = {}, body = {} } = req.body as RunRequestBody;
 
   // Validate method and URL
   if (!method || !url) {
     res.status(400).json({ message: "Method and URL are required" });
-    return;
   }
 
   if (!allowedMethods.includes(method.toUpperCase())) {
     res.status(400).json({
       message: "Only GET, POST, PUT and DELETE methods are allowed for now",
     });
-    return;
   }
 
-  // Capture IP and User-Agent
-  const ip = (req.headers["x-forwarded-for"] ||
+  // Validate user
+  if (!req.user?.email) {
+    res.status(401).json({ message: "Unauthorized: No user found" });
+  }
+
+  const foundUser = req.user
+    ? await prisma.user.findUnique({
+        where: { email: req.user.email },
+      })
+    : null;
+
+  if (!foundUser) {
+    res.status(404).json({ message: "User not found" });
+  }
+
+  if (foundUser && !foundUser.is_verified) {
+    res.status(403).json({ message: "Please verify your email address" });
+  }
+
+  const ip =
+    (req.headers["x-forwarded-for"] as string) ||
     req.socket.remoteAddress ||
-    "") as string;
+    "";
 
   const userAgent = req.headers["user-agent"] || "unknown";
 
@@ -44,12 +69,28 @@ export const runRequest = async (
       url,
       headers,
       data: ["POST", "PUT"].includes(method.toUpperCase()) ? body : undefined,
-      validateStatus: () => true,
+      validateStatus: () => true, // Log all responses
     });
 
     const responseTime = Date.now() - startTime;
     const responseSizeKB =
       Buffer.byteLength(JSON.stringify(response.data)) / 1024;
+
+    await prisma.requestLog.create({
+      data: {
+        userId: foundUser?.id.toString() || "unknown",
+        method,
+        url,
+        status: response.status,
+        responseTimeMs: responseTime,
+        responseSizeKB: parseFloat(responseSizeKB.toFixed(2)),
+        headers: response.headers,
+        responseBody: response.data,
+        ipAddress: ip,
+        userAgent: userAgent,
+        isError: response.status >= 400,
+      },
+    });
 
     res.status(200).json({
       status: response.status,
@@ -66,6 +107,24 @@ export const runRequest = async (
       },
     });
   } catch (error: any) {
+    const responseTime = Date.now() - startTime;
+
+    await prisma.requestLog.create({
+      data: {
+        userId: foundUser?.id.toString() || "unknown",
+        method,
+        url,
+        status: 500,
+        responseTimeMs: responseTime,
+        responseSizeKB: 0,
+        headers: {},
+        responseBody: { error: error.message || "Unknown error" },
+        ipAddress: ip,
+        userAgent,
+        isError: true,
+      },
+    });
+
     res.status(500).json({
       message: "Request Failed",
       error: error.message || "Unknown error",

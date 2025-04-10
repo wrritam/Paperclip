@@ -17,10 +17,10 @@ model User {
   id          String       @id @default(cuid())
   email       String       @unique
   name        String?
-  password       String
-  is_verified    Boolean
-  otp            Int?
-  last_login     String?
+  password    String
+  is_verified Boolean
+  otp         Int?
+  last_login  String?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   requestLogs RequestLog[]
@@ -31,6 +31,8 @@ model RequestLog {
   id             String   @id @default(cuid())
   userId         String
   user           User     @relation(fields: [userId], references: [id])
+  insightId      String?
+  insight        Insight? @relation(fields: [insightId], references: [id])
   method         String
   url            String
   status         Int
@@ -45,24 +47,25 @@ model RequestLog {
 }
 
 model Insight {
-  id                     String   @id @default(cuid())
+  id                     String       @id @default(cuid())
   userId                 String
-  user                   User     @relation(fields: [userId], references: [id])
-  endpoint               String   // "GET /api/products"
- 
+  user                   User         @relation(fields: [userId], references: [id])
+  endpoint               String       
+  requestLogs            RequestLog[]
+
   // Performance Metrics
-  avgResponseTime        Int      // ms
-  errorRate              Float    // 0.0 - 1.0
-  slowestResponse        Int      // ms
+  avgResponseTime        Int          // ms
+  errorRate              Float        // 0.0 - 1.0
+  slowestResponse        Int          // ms
   avgPayloadSizeKB       Float
-  statusCodeDistribution Json     // { "200": 45, "500": 5 }
-  mostCommonHeaders      Json?    // { "content-type": "application/json" }
-  recentOutputs          Json?    // Optional: last 3 JSON responses
-  score                  Int      // Performance score (0–100)
+  statusCodeDistribution Json         // { "200": 45, "500": 5 }
+  mostCommonHeaders      Json?
+  recentOutputs          Json?
+  score                  Int          
 
   // AI
-  aiTips                 Json?    // { "indexSuggestion": "...", "cacheTip": "..." }
-  summary                String   // Human-readable AI summary
+  aiTips                 Json?
+  summary                String
 
-  createdAt              DateTime @default(now())
+  createdAt              DateTime     @default(now())
 }
