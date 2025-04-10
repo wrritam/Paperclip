@@ -4,6 +4,6 @@ const router = express.Router();
 import { runRequest } from "../controllers/runRequest";
 import { authentication } from "../middleware/authenticator";
 
-router.post("/run-request", runRequest);
+router.post("/run-request", authentication, runRequest);
 
 export default router;
