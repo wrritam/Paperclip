@@ -1,4 +1,5 @@
 import prisma from "../db/db.config";
+import { generateMockSuggestion } from "./mockSuggestions";
 
 export const getInsights = async (requestId: string) => {
   const request = await prisma.request.findUnique({
@@ -43,6 +44,12 @@ export const getInsights = async (requestId: string) => {
 
   const score = Math.max(0, 100 - avgResponseTime - errorRate * 100 * 2);
 
+  const tips = generateMockSuggestion({
+    avgResponseTime,
+    errorRate,
+    slowestResponse,
+  });
+
   // Check if Insight already exists
   const existingInsight = await prisma.insight.findFirst({
     where: { requestId },
@@ -62,6 +69,7 @@ export const getInsights = async (requestId: string) => {
         mostCommonHeaders,
         recentOutputs,
         score,
+        aiTips: tips,
         updatedAt: new Date(),
       },
     });
@@ -77,6 +85,7 @@ export const getInsights = async (requestId: string) => {
         mostCommonHeaders,
         recentOutputs,
         score,
+        aiTips: tips,
         summary: `Performance insight generated for ${request.method.toUpperCase()} ${
           request.url
         }`,
