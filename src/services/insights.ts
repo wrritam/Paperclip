@@ -1,5 +1,6 @@
 import prisma from "../db/db.config";
 import { generateMockSuggestion } from "./mockSuggestions";
+import { paperclipAPIscore } from "./paperclipScore";
 
 export const getInsights = async (requestId: string) => {
   const request = await prisma.request.findUnique({
@@ -42,13 +43,23 @@ export const getInsights = async (requestId: string) => {
   const mostCommonHeaders = logs[0]?.headers || {};
   const recentOutputs = logs.slice(0, 3).map((log) => log.responseBody);
 
-  const score = Math.max(0, 100 - avgResponseTime - errorRate * 100 * 2);
+  // const score = Math.max(0, 100 - avgResponseTime - errorRate * 100 * 2);
 
   const tips = generateMockSuggestion({
     avgResponseTime,
     errorRate,
     slowestResponse,
   });
+
+  const insights = {
+    avgResponseTime,
+    slowestResponse,
+    errorRate,
+    avgPayloadSizeKB,
+    statusCodeDistribution,
+  };
+
+  const paperclipScore = paperclipAPIscore(insights);
 
   // Check if Insight already exists
   const existingInsight = await prisma.insight.findFirst({
@@ -68,7 +79,7 @@ export const getInsights = async (requestId: string) => {
         statusCodeDistribution,
         mostCommonHeaders,
         recentOutputs,
-        score,
+        score: paperclipScore,
         aiTips: tips,
         updatedAt: new Date(),
       },
@@ -84,7 +95,7 @@ export const getInsights = async (requestId: string) => {
         statusCodeDistribution,
         mostCommonHeaders,
         recentOutputs,
-        score,
+        score: paperclipScore,
         aiTips: tips,
         summary: `Performance insight generated for ${request.method.toUpperCase()} ${
           request.url
