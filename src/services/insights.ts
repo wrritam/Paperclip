@@ -1,6 +1,6 @@
 import prisma from "../db/db.config";
-import { generateMockSuggestion } from "./mockSuggestions";
-import { paperclipAPIscore } from "./paperclipScore";
+import { generateMockSuggestion } from "../helpers/mockSuggestions";
+import { paperclipAPIscore } from "../helpers/paperclipScore";
 
 export const getInsights = async (requestId: string) => {
   const request = await prisma.request.findUnique({
