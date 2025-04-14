@@ -2,6 +2,7 @@ import axios, { AxiosRequestHeaders } from "axios";
 import { Request, Response } from "express";
 import prisma from "../db/db.config";
 import { getInsights } from "../services/insights";
+import { generateAISuggestionsForAPI } from "../services/aiSuggestion";
 
 const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
 
@@ -113,7 +114,42 @@ export const runRequest = async (
 
     let insight = null;
     if (totalLogs >= 5) {
+      // Get basic insights first
       insight = await getInsights(savedRequest.id);
+
+      if (insight) {
+        // Generate AI suggestions
+        const aiAnalysis = await generateAISuggestionsForAPI(method, url, {
+          avgResponseTime: insight.avgResponseTime,
+          errorRate: insight.errorRate,
+          slowestResponse: insight.slowestResponse,
+          avgPayloadSizeKB: insight.avgPayloadSizeKB,
+          statusCodeDistribution: insight.statusCodeDistribution as Record<
+            string,
+            number
+          >,
+        });
+
+        // Update insight with AI suggestions and summary
+        insight = await prisma.insight.update({
+          where: { id: insight.id },
+          data: {
+            summary: aiAnalysis.summary,
+            aiTips: {
+              createMany: {
+                data: aiAnalysis.tips.map((tip) => ({
+                  title: tip.title,
+                  description: tip.description,
+                  codeSnippet: tip.codeSnippet,
+                })),
+              },
+            },
+          },
+          include: {
+            aiTips: true,
+          },
+        });
+      }
     }
 
     // Return final response
@@ -130,7 +166,13 @@ export const runRequest = async (
         userAgent,
         timestamp: new Date().toISOString(),
       },
-      insight,
+      insight: insight
+        ? {
+            ...insight,
+            aiTips: insight.aiTips,
+            summary: insight.summary,
+          }
+        : null,
     });
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
