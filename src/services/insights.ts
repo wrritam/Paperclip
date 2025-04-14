@@ -80,7 +80,7 @@ export const getInsights = async (requestId: string) => {
         mostCommonHeaders,
         recentOutputs,
         score: paperclipScore,
-        aiTips: tips,
+        // aiTips: tips,
         updatedAt: new Date(),
       },
     });
@@ -96,7 +96,7 @@ export const getInsights = async (requestId: string) => {
         mostCommonHeaders,
         recentOutputs,
         score: paperclipScore,
-        aiTips: tips,
+        // aiTips: tips,
         summary: `Performance insight generated for ${request.method.toUpperCase()} ${
           request.url
         }`,
