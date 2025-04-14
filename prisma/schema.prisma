@@ -31,10 +31,12 @@ model Request {
   userId    String
   method    String
   url       String
+  summary                String
   createdAt DateTime    @default(now())
   user        User        @relation(fields: [userId], references: [id])
   requestLogs RequestLog[]
   insights    Insight[]
+  aiTips      AITip[]
 }
 
 model RequestLog {
@@ -68,11 +70,6 @@ model Insight {
   mostCommonHeaders      Json?
   recentOutputs          Json?
   score                  Int         
-
-  // AI
-  aiTips                 AITip[]
-  summary                String
-
   requestLogs            RequestLog[]
   createdAt              DateTime    @default(now())
   updatedAt              DateTime    @updatedAt
@@ -80,8 +77,8 @@ model Insight {
 
 model AITip {
   id                      String  @id @default(cuid())
-  insightId               String
-  insight                 Insight @relation(fields: [insightId], references: [id])
+  requestId  String
+  request    Request  @relation(fields: [requestId], references: [id])
   title                   String
   description             String
   codeSnippet             String?
