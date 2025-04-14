@@ -54,14 +54,15 @@ Payload Size (avg): ${insight.avgPayloadSizeKB} KB
 Status Codes: ${JSON.stringify(insight.statusCodeDistribution)}
 `;
 
-  // Generate suggestions
-  const suggestionsResult = await model.generateContent(basePrompt);
-  const suggestionsText = (await suggestionsResult.response).text();
-  const tips = parseToAITips(suggestionsText);
+  // Generate suggestions and summary
+  const [suggestionsResult, summaryResult] = await Promise.all([
+    model.generateContent(basePrompt),
+    model.generateContent(summaryPrompt),
+  ]);
 
-  // Generate summary
-  const summaryResult = await model.generateContent(summaryPrompt);
+  const suggestionsText = (await suggestionsResult.response).text();
   const summaryText = (await summaryResult.response).text();
+  const tips = parseToAITips(suggestionsText);
 
   return {
     tips,
