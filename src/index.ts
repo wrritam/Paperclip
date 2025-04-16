@@ -10,7 +10,6 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.send("🧠 Paperclip Backend Server is Running!");
@@ -18,6 +17,8 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/user", router);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
