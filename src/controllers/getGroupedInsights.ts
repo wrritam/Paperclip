@@ -19,10 +19,7 @@ interface CustomRequest extends Request {
   user?: User;
 }
 
-const allInsights = async (req: CustomRequest, res: Response) => {
-  console.log("🔍 Hitting /all-insights route.");
-  console.log("User from token:", req.user);
-
+export const allInsights = async (req: CustomRequest, res: Response) => {
   try {
     if (!req.user?.email) {
       console.log("No email in token");
@@ -53,5 +50,3 @@ const allInsights = async (req: CustomRequest, res: Response) => {
     });
   }
 };
-
-export const groupedInsights = allInsights;
