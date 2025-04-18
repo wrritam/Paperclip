@@ -10,6 +10,10 @@ interface SearchFilters {
   minResponseTime?: number;
   maxResponseTime?: number;
   isError?: boolean;
+  page?: number;
+  limit?: number;
+  sortBy?: "responseTimeMs" | "createdAt" | "status";
+  sortOrder?: "asc" | "desc";
 }
 
 interface CustomRequest extends Request {
@@ -20,6 +24,8 @@ interface CustomRequest extends Request {
 }
 
 export const searchLogs = async (req: CustomRequest, res: Response) => {
+
+  console.log("hitting this route")
   try {
     if (!req.user?.email) {
       res.status(401).json({ success: false, message: "Unauthorized" });
@@ -36,47 +42,71 @@ export const searchLogs = async (req: CustomRequest, res: Response) => {
     }
 
     const filters: SearchFilters = req.query;
+    const page = parseInt(filters.page?.toString() || "1");
+    const limit = parseInt(filters.limit?.toString() || "10");
+    const skip = (page - 1) * limit;
 
-    const logs = await prisma.requestLog.findMany({
-      where: {
-        request: {
-          userId: user.id,
-          ...(filters.method && { method: filters.method.toUpperCase() }),
-          ...(filters.url && { url: { contains: filters.url } }),
+    const [logs, total] = await Promise.all([
+      prisma.requestLog.findMany({
+        where: {
+          request: {
+            userId: user.id,
+            ...(filters.method && { method: filters.method.toUpperCase() }),
+            ...(filters.url && { url: { contains: filters.url } }),
+          },
+          ...(filters.status && {
+            status: parseInt(filters.status.toString()),
+          }),
+          ...(filters.isError !== undefined && { isError: filters.isError }),
+          ...(filters.startDate && {
+            createdAt: {
+              gte: new Date(filters.startDate),
+              ...(filters.endDate && { lte: new Date(filters.endDate) }),
+            },
+          }),
+          ...(filters.minResponseTime && {
+            responseTimeMs: {
+              gte: parseInt(filters.minResponseTime.toString()),
+              ...(filters.maxResponseTime && {
+                lte: parseInt(filters.maxResponseTime.toString()),
+              }),
+            },
+          }),
         },
-        ...(filters.status && { status: parseInt(filters.status.toString()) }),
-        ...(filters.isError !== undefined && { isError: filters.isError }),
-        ...(filters.startDate && {
-          createdAt: {
-            gte: new Date(filters.startDate),
-            ...(filters.endDate && { lte: new Date(filters.endDate) }),
-          },
-        }),
-        ...(filters.minResponseTime && {
-          responseTimeMs: {
-            gte: parseInt(filters.minResponseTime.toString()),
-            ...(filters.maxResponseTime && {
-              lte: parseInt(filters.maxResponseTime.toString()),
-            }),
-          },
-        }),
-      },
-      include: {
-        request: {
-          select: {
-            method: true,
-            url: true,
+        include: {
+          request: {
+            select: {
+              method: true,
+              url: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+        orderBy: {
+          [filters.sortBy || "createdAt"]: filters.sortOrder || "desc",
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.requestLog.count({
+        where: {
+          request: {
+            userId: user.id,
+            ...(filters.method && { method: filters.method.toUpperCase() }),
+            ...(filters.url && { url: { contains: filters.url } }),
+          },
+        },
+      }),
+    ]);
 
     res.json({
       success: true,
       data: logs,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error: any) {
     res.status(500).json({
