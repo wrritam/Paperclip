@@ -1,8 +1,6 @@
 import { Request, Response } from "express";
 import { getGroupedInsights } from "../services/groupInsights";
 import prisma from "../db/db.config";
-
-// Match the interface from authenticator.ts
 interface User {
   id: number;
   email: string;
