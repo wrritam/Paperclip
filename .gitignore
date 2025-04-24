@@ -1,5 +1,36 @@
+# Dependencies
+node_modules
+.pnpm-store
+.pnpm-debug.log*
+
+# Build outputs
+dist
+.next
+build
+out
+.turbo
+
 # Environment variables
 .env*
 !.env.example
 
-node_modules
+# Testing and coverage
+coverage
+*.test.*
+__tests__
+__mocks__
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+
+# Misc
+*.log
+.cache
