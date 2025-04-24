@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { sendMail } from "../../helpers/sendMail";
 import prisma from "../../db/db.config";
 import { sendOTP } from "../../helpers/sendOTP";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const mailSubject = "Verification from Paperclip";
 
@@ -76,7 +76,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     const hashedPassword: string = await new Promise((resolve, reject) => {
       bcrypt.hash(password, 7, (err, hash) => {
         if (err) reject(err);
-        else resolve(hash);
+        else resolve(hash as string);
       });
     });
     const randomOTP = sendOTP();

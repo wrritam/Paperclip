@@ -1,11 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "cache": false,
       "dependsOn": ["^build", "db:generate"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "outputs": ["apps/frontend/.next/**", "apps/backend/dist/**"],
       "env": ["NODE_ENV", "DATABASE_URL"]
     },
     "lint": {

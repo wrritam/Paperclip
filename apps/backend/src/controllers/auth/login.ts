@@ -1,7 +1,7 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../../db/db.config";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export const login = async (req: express.Request, res: express.Response) => {
   const { email, password } = req.body;
@@ -17,7 +17,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     const passwordCheck: boolean = await new Promise((resolve, reject) => {
       bcrypt.compare(password, user.password, async (error, result) => {
         if (error) reject(error);
-        else resolve(result);
+        else resolve(result || false);
       });
     });
     if (passwordCheck === true) {
