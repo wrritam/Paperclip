@@ -32,7 +32,7 @@ async function generatePrisma() {
   console.log(`${colors.blue}🔧 Generating Prisma Client...${colors.reset}`)
   try {
     console.log(`${colors.white}📦 Installing Prisma dependencies...${colors.reset}`)
-    execSync("cd apps/backend && pnpm add -D prisma@latest @prisma/client@latest zod-prisma-types@latest", {
+    execSync("cd apps/backend && pnpm add -D prisma@latest @prisma/client@latest", {
       stdio: 'pipe',
       encoding: 'utf8'
     })
