@@ -1,0 +1,43 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "build": {
+      "cache": false,
+      "dependsOn": ["^build", "db:generate"],
+      "outputs": ["apps/frontend/.next/**", "apps/backend/dist/**"],
+      "env": ["NODE_ENV", "DATABASE_URL"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"]
+    },
+    "start": {
+      "cache": false,
+      "env": ["NODE_ENV", "DATABASE_URL"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "env": ["NODE_ENV", "DATABASE_URL"],
+      "dependsOn": ["db:generate"]
+    },
+    "test": {
+      "cache": false,
+      "dependsOn": ["^test"],
+      "env": ["NODE_ENV", "DATABASE_URL"]
+    },
+    "db:generate": {
+      "outputs": ["node_modules/.prisma/**", "node_modules/@prisma/client/**"],
+      "cache": false
+    },
+    "db:migrate:deploy": {
+      "env": ["DATABASE_URL"]
+    },
+    "type-check": {
+      "cache": false
+    }
+  }
+}

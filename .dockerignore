@@ -1,20 +1,28 @@
 # Dependencies
 node_modules
 .pnpm-store
-.pnpm-debug.log*
 
 # Build outputs
-dist
 .next
+dist
 build
 out
+
+# Development
+.git
+.gitignore
+.github
+README.md
+*.md
 .turbo
+.vercel
 
-# Environment variables
+# Environment and local files
 .env*
-!.env.example
+.local
+*.log
 
-# Testing and coverage
+# Testing
 coverage
 *.test.*
 __tests__
@@ -29,8 +37,3 @@ __mocks__
 # OS
 .DS_Store
 Thumbs.db
-
-
-# Misc
-*.log
-.cache
