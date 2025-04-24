@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+    provider              = "zod-prisma"
+    output                = "./zod"
+    relationModel         = true
+    modelCase             = "PascalCase"
+    modelSuffix           = "Model"
+    prismaJsonNullability = true
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String @id @default(cuid())
+  email       String      @unique
+  name        String?
+  password    String
+  is_verified Boolean
+  otp         Int?
+  last_login  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  requests    Request[]
+}
+
+model Request {
+  id        String  @id @default(cuid())
+  userId    String
+  method    String
+  url       String
+  summary                String
+  createdAt DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
+  requestLogs RequestLog[]
+  insights    Insight[]
+  aiTips      AITip[]
+}
+
+model RequestLog {
+  id         String     @id @default(cuid())
+  requestId  String
+  request    Request  @relation(fields: [requestId], references: [id])
+  insightId  String?
+  insight    Insight?  @relation(fields: [insightId], references: [id])
+  status         Int
+  responseTimeMs Int
+  responseSizeKB Float
+  isError        Boolean  @default(false)
+  responseBody   Json?
+  headers        Json?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime @default(now())
+}
+
+model Insight {
+  id                     String @id @default(cuid())
+  requestId              String
+  request                Request    @relation(fields: [requestId], references: [id])
+
+  // Performance Metrics
+  avgResponseTime        Int         // ms
+  errorRate              Float       // 0.0 - 1.0
+  slowestResponse        Int         // ms
+  avgPayloadSizeKB       Float
+  statusCodeDistribution Json        // { "200": 45, "500": 5 }
+  mostCommonHeaders      Json?
+  recentOutputs          Json?
+  score                  Int
+  requestLogs            RequestLog[]
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+}
+
+model AITip {
+  id                      String  @id @default(cuid())
+  requestId  String
+  request    Request  @relation(fields: [requestId], references: [id])
+  title                   String
+  description             String
+  codeSnippet             String?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+}

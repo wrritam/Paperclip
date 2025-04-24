@@ -1,0 +1,39 @@
+# Dependencies
+node_modules
+.pnpm-store
+
+# Build outputs
+.next
+dist
+build
+out
+
+# Development
+.git
+.gitignore
+.github
+README.md
+*.md
+.turbo
+.vercel
+
+# Environment and local files
+.env*
+.local
+*.log
+
+# Testing
+coverage
+*.test.*
+__tests__
+__mocks__
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
