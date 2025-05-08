@@ -1,12 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "lib": ["ES2020"],
-    "rootDir": ".",
-    "strict": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["esnext"],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "target": "ES2022",
+    "outDir": "dist",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "../*": ["src/*"]
+    },
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true
   },
-  "include": ["api/**/*.ts", "src/**/*.ts"]
+  "include": ["src/**/*", "src/config/db.config.ts"],
+  "exclude": ["node_modules"]
 }

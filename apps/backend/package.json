@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "tsc -b",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
-    "vercel-build": "echo hello"
+    "vercel-build": "prisma generate && prisma db push"
   },
   "keywords": [],
   "author": "",
