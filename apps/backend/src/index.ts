@@ -4,7 +4,7 @@ import dotenv from 'dotenv'
 import { errorHandler } from './middleware/errorHandler'
 import authRouter from './routes/authRouter'
 import router from './routes/router'
-import prisma from './db/db.config';
+import prisma from './db/db.config'
 
 dotenv.config()
 const app = express()
@@ -23,9 +23,9 @@ app.get('/', (req, res) => {
 })
 
 process.on('SIGTERM', async () => {
-  await prisma.$disconnect();
-  process.exit(0);
-});
+  await prisma.$disconnect()
+  process.exit(0)
+})
 
 app.use('/auth', authRouter)
 app.use('/user', router)
@@ -36,3 +36,5 @@ const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
   console.log(`🚀 Server is live at http://localhost:${PORT}`)
 })
+
+export default app

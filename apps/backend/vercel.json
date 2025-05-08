@@ -1,33 +1,34 @@
 {
-   "version": 2,
-   "builds": [
-     {
-       "src": "src/index.ts",
-       "use": "@vercel/node",
-       "config": {
-         "prebuild": "prisma generate",
-         "includeFiles": ["prisma/**/*"]
-       }
-     }
-   ],
-   "routes": [
-     {
-       "src": "/(.*)",
-       "dest": "src/index.ts",
-       "headers": {
-         "Access-Control-Allow-Credentials": "true",
-         "Access-Control-Allow-Origin": "https://turquioaz.vercel.app",
-         "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-         "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
-       }
-     }
-   ],
-   "git": {
-     "deploymentEnabled": {
-       "main": true
-     }
-   },
-   "env": {
-     "NODE_ENV": "production"
-   }
- }
+  "version": 2,
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "builds": [
+    {
+      "src": "src/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "prebuild": "prisma generate",
+        "includeFiles": ["prisma/**/*"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/index.ts",
+      "headers": {
+        "Access-Control-Allow-Credentials": "true",
+        "Access-Control-Allow-Origin": "https://turquioaz.vercel.app",
+        "Access-Control-Allow-Methods": "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+        "Access-Control-Allow-Headers": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+      }
+    }
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
