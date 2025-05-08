@@ -1,9 +1,19 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "src/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "prebuild": "prisma generate",
+        "includeFiles": ["prisma/**/*"]
+      }
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "api/index.ts",
+      "dest": "src/index.ts",
       "headers": {
         "Access-Control-Allow-Credentials": "true",
         "Access-Control-Allow-Origin": "https://turquioaz.vercel.app",
@@ -12,6 +22,11 @@
       }
     }
   ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   }
