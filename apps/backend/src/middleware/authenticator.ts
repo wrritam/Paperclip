@@ -1,22 +1,23 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+import { CustomRequest } from "../types";
+import { User } from "@prisma/client";
 
-interface User {
-  id: number;
-  email: string;
-  name: string | null;
-  password: string;
-  is_verified: boolean;
-  otp: number | null;
-  last_login: string | null;
-  created_at: string;
-  updated_at: string | null;
+function isUserFromJwt(payload: string | jwt.JwtPayload): payload is User {
+  return (
+    typeof payload === "object" &&
+    payload !== null &&
+    typeof payload.id === "string" &&
+    (typeof payload.name === "string" || payload.name === null) &&
+    typeof payload.email === "string" &&
+    typeof payload.password === "string" &&
+    typeof payload.is_verified === "boolean" &&
+    (typeof payload.otp === "number" || payload.otp === null) &&
+    (typeof payload.last_login === "string" || payload.last_login === null) &&
+    typeof payload.createdAt === "string" &&
+    typeof payload.updatedAt === "string"
+  );
 }
-
-interface CustomRequest extends Request {
-  user?: User;
-}
-
 export const authentication = (
   req: CustomRequest,
   res: Response,
@@ -29,9 +30,15 @@ export const authentication = (
   }
 
   try {
-    const verified = jwt.verify(token, process.env.hiddenKey || "") as User;
-    req.user = verified;
-    next();
+    const verified = jwt.verify(token, process.env.hiddenKey || "");
+
+    if (isUserFromJwt(verified)) {
+      req.user = verified;
+      next();
+    } else {
+      res.status(401).json({ message: "Invalid token payload" });
+      return;
+    }
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
     return;

@@ -1,9 +1,9 @@
 import express from 'express'
 import cors from 'cors'
 import dotenv from 'dotenv'
-import { errorHandler } from './middleware/errorHandler'
-import authRouter from './routes/authRouter'
-import router from './routes/router'
+import { errorHandler } from './middleware/error-handler'
+import authRouter from './routes/auth'
+import mainRouter from './routes/main'
 import prisma from './db/db.config'
 
 dotenv.config()
@@ -28,7 +28,7 @@ process.on('SIGTERM', async () => {
 })
 
 app.use('/auth', authRouter)
-app.use('/user', router)
+app.use('/user', mainRouter)
 
 app.use(errorHandler)
 

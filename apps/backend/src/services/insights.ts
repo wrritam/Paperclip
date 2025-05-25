@@ -1,5 +1,5 @@
 import prisma from "../db/db.config";
-import { paperclipAPIscore } from "../helpers/paperclipScore";
+import { paperclipAPIscore } from "../helpers/paperclip-score";
 
 export const getInsights = async (requestId: string) => {
   const [request, logs] = await Promise.all([

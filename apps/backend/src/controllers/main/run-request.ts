@@ -1,17 +1,11 @@
 import axios, { AxiosRequestHeaders } from "axios";
-import { Request, Response } from "express";
-import prisma from "../db/db.config";
-import { getInsights } from "../services/insights";
-import { generateAISuggestionsForAPI } from "../services/aiSuggestion";
+import { Response } from "express";
+import prisma from "../../db/db.config";
+import { getInsights } from "../../services/insights";
+import { generateAISuggestionsForAPI } from "../../services/ai-suggestion";
+import { CustomRequest } from "../../types";
 
 const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
-
-interface CustomRequest extends Request {
-  user?: {
-    id: number;
-    email: string;
-  };
-}
 
 interface RunRequestBody {
   method: string;

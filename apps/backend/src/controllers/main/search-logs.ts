@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
-import prisma from "../db/db.config";
+import { Response } from "express";
+import prisma from "../../db/db.config";
+import { CustomRequest } from "../../types";
 
 interface SearchFilters {
   method?: string;
@@ -16,16 +17,9 @@ interface SearchFilters {
   sortOrder?: "asc" | "desc";
 }
 
-interface CustomRequest extends Request {
-  user?: {
-    id: number;
-    email: string;
-  };
-}
 
 export const searchLogs = async (req: CustomRequest, res: Response) => {
 
-  console.log("hitting this route")
   try {
     if (!req.user?.email) {
       res.status(401).json({ success: false, message: "Unauthorized" });

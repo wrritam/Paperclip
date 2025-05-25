@@ -1,18 +1,18 @@
 import express from "express";
 const router = express.Router();
 
-import { rateLimiterforAPIs } from "../middleware/rateLimiter";
+import { rateLimiterforAPIs } from "../services/rate-limiter";
 import {
   validateRunRequest,
   validateSearchLogs,
   validateDeleteRequest,
   validateAllInsights,
-} from "../middleware/requestValidator";
-import { runRequest } from "../controllers/runRequest";
+} from "../middleware/request-validator";
+import { runRequest } from "../controllers/main/run-request";
 import { authentication } from "../middleware/authenticator";
-import { deleteRequest } from "../controllers/deleteRequest";
-import { allInsights } from "../controllers/getGroupedInsights";
-import { searchLogs } from "../controllers/searchLogs";
+import { deleteRequest } from "../controllers/main/delete-request";
+import { allInsights } from "../controllers/main/get-grouped-insights";
+import { searchLogs } from "../controllers/main/search-logs";
 
 router.use(rateLimiterforAPIs);
 router.post("/run-request", authentication, validateRunRequest, runRequest);

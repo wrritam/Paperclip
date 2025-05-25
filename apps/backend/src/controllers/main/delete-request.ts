@@ -1,12 +1,6 @@
-import { Request, Response } from 'express'
-import prisma from '../db/db.config'
-
-interface CustomRequest extends Request {
-  user?: {
-    id: string
-    email: string
-  }
-}
+import { Response } from 'express'
+import prisma from '../../db/db.config'
+import { CustomRequest } from '../../types'
 
 export const deleteRequest = async (
   req: CustomRequest,

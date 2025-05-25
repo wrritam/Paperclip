@@ -1,21 +1,7 @@
-import { Request, Response } from "express";
-import { getGroupedInsights } from "../services/groupInsights";
-import prisma from "../db/db.config";
-interface User {
-  id: number;
-  email: string;
-  name: string | null;
-  password: string;
-  is_verified: boolean;
-  otp: number | null;
-  last_login: string | null;
-  created_at: string;
-  updated_at: string | null;
-}
-
-interface CustomRequest extends Request {
-  user?: User;
-}
+import { Response } from "express";
+import { CustomRequest } from "../../types";
+import prisma from "../../db/db.config";
+import { getGroupedInsights } from "../../services/group-insights";
 
 export const allInsights = async (req: CustomRequest, res: Response) => {
   try {

@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
-import { parseToAITips } from '../helpers/parseAI'
 import dotenv from 'dotenv'
+import { parseToAITips } from '../helpers/parse-ai'
+
 dotenv.config()
 
 if (!process.env.GEMINI_API_KEY) {

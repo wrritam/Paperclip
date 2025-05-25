@@ -1,13 +1,13 @@
 import express from "express";
 const authRouter = express.Router();
 
-import { rateLimiterforAuth } from "../middleware/rateLimiter";
+import { rateLimiterforAuth } from "../services/rate-limiter";
 import { register } from "../controllers/auth/register";
-import { verifyRegistration } from "../controllers/auth/verifyReg";
+import { verifyRegistration } from "../controllers/auth/verify-registration";
 import { login } from "../controllers/auth/login";
 import { forgotPassword } from "../controllers/auth/forgot-password";
 import { resetPassword } from "../controllers/auth/reset-password";
-import { verifyUpdation } from "../controllers/auth/verifyUpdate";
+import { verifyUpdation } from "../controllers/auth/verify-update";
 
 authRouter.use(rateLimiterforAuth);
 authRouter.post("/register", register);
