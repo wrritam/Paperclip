@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 
 export const login = async (req: express.Request, res: express.Response) => {
   const { email, password } = req.body;
+
+  console.log(email, password)
   const user = await prisma.user.findUnique({ where: { email: email } });
   if (!user || user.is_verified === false) {
     res.json({

@@ -10,10 +10,6 @@ build
 out
 .turbo
 
-# Environment variables
-.env*
-!.env.example
-
 # Testing and coverage
 coverage
 *.test.*

@@ -12,10 +12,10 @@
     "clean": "find . -name node_modules -o -name .next -o -name .turbo -o -name .tsbuildinfo -o -name dist -type d -prune | xargs rm -rf",
     "type-check": "NODE_OPTIONS=--max-old-space-size=4096 dotenv -e .env.local -- turbo run type-check",
     "postinstall": "pnpm --filter ./apps/backend prisma generate",
-    "db:generate": "dotenv -e .env.local -- pnpm --filter ./apps/backend prisma generate",
-    "db:migrate": "dotenv -e .env.local -- pnpm --filter ./apps/backend prisma migrate dev",
-    "db:push": "dotenv -e .env.local -- pnpm --filter ./apps/backend prisma db push",
-    "db:studio": "dotenv -e .env.local -- pnpm --filter ./apps/backend prisma studio"
+    "db:generate": "dotenv -e .env.local -- pnpm --filter ./apps/backend exec prisma generate",
+    "db:migrate": "dotenv -e .env.local -- pnpm --filter ./apps/backend exec prisma migrate dev",
+    "db:push": "dotenv -e .env.local -- pnpm --filter ./apps/backend exec prisma db push",
+    "db:studio": "dotenv -e .env.local -- pnpm --filter ./apps/backend exec prisma studio"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.31.0",
