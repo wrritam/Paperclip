@@ -30,7 +30,7 @@ export const authentication = (
   }
 
   try {
-    const verified = jwt.verify(token, process.env.hiddenKey || "");
+    const verified = jwt.verify(token, process.env.ENCRYPTION_KEY || "");
 
     if (isUserFromJwt(verified)) {
       req.user = verified;

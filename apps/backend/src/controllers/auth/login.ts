@@ -23,7 +23,7 @@ export const login = async (req: express.Request, res: express.Response) => {
     if (passwordCheck === true) {
       const loginToken = jwt.sign(
         { email: email, name: user.name },
-        process.env.hiddenKey as string,
+        process.env.ENCRYPTION_KEY as string,
         { expiresIn: "7d" }
       );
       await prisma.user.update({

@@ -46,7 +46,7 @@ export default function ResetPasswordPage() {
     setIsLoading(true)
 
     try {
-      const response = await fetch("/auth/reset-password", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

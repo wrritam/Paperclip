@@ -61,7 +61,7 @@ export const register = async (req: express.Request, res: express.Response) => {
       await sendMail(email, mailSubject, content);
       const token = jwt.sign(
         { email: email, name: name },
-        process.env.hiddenKey as string,
+        process.env.ENCRYPTION_KEY as string,
         { expiresIn: "1d" }
       );
       res
@@ -131,7 +131,7 @@ export const register = async (req: express.Request, res: express.Response) => {
     });
     const token = jwt.sign(
       { email: email, name: name },
-      process.env.hiddenKey as string,
+      process.env.ENCRYPTION_KEY as string,
       { expiresIn: "1d" }
     );
     res.json({

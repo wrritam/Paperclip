@@ -16,7 +16,7 @@ export const forgotPassword = async (
       where: { email: email },
       data: { otp: randomOTP },
     });
-    const token = jwt.sign({ email: email }, process.env.hiddenKey as string, {
+    const token = jwt.sign({ email: email }, process.env.ENCRYPTION_KEY as string, {
       expiresIn: "1d",
     });
     const content = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

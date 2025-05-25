@@ -1,34 +1,41 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Dispatch, SetStateAction } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
 import { Input } from "@/src/components/ui/input"
 import { Button } from "@/src/components/ui/button"
 import { Textarea } from "@/src/components/ui/textarea"
 import { PlusCircle, X } from "lucide-react"
 
-export default function RequestForm() {
-  const [params, setParams] = useState([{ key: "", value: "", id: "1" }])
-  const [headers, setHeaders] = useState([
-    { key: "Content-Type", value: "application/json", id: "1" },
-    { key: "Accept", value: "application/json", id: "2" },
-  ])
+type Props = {
+  queryParams: Array<{ id: string; key: string; value: string }>;
+  setQueryParams: Dispatch<SetStateAction<Array<{ id: string; key: string; value: string }>>>;
+  headers: Array<{ id: string; key: string; value: string }>;
+  setHeaders: Dispatch<SetStateAction<Array<{ id: string; key: string; value: string }>>>;
+  requestBody: string;
+  setRequestBody: Dispatch<SetStateAction<string>>;
+}
+
+export default function RequestForm({
+  queryParams,
+  setQueryParams,
+  headers,
+  setHeaders,
+  requestBody,
+  setRequestBody,
+}: Props) {
   const [bodyType, setBodyType] = useState("json")
-  const [jsonBody, setJsonBody] = useState(`{
-  "name": "John Doe",
-  "email": "john@example.com"
-}`)
 
   const addParam = () => {
-    setParams([...params, { key: "", value: "", id: Date.now().toString() }])
+    setQueryParams([...queryParams, { key: "", value: "", id: Date.now().toString() }])
   }
 
   const removeParam = (id: string) => {
-    setParams(params.filter((param) => param.id !== id))
+    setQueryParams(queryParams.filter((param) => param.id !== id))
   }
 
   const updateParam = (id: string, field: "key" | "value", value: string) => {
-    setParams(params.map((param) => (param.id === id ? { ...param, [field]: value } : param)))
+    setQueryParams(queryParams.map((param) => (param.id === id ? { ...param, [field]: value } : param)))
   }
 
   const addHeader = () => {
@@ -60,7 +67,7 @@ export default function RequestForm() {
 
         <TabsContent value="params" className="p-4">
           <div className="space-y-2">
-            {params.map((param, index) => (
+            {queryParams.map((param, index) => (
               <div key={param.id} className="grid grid-cols-12 gap-2">
                 <Input
                   className="col-span-5"
@@ -78,7 +85,7 @@ export default function RequestForm() {
                   <Button variant="outline" size="icon" className="h-10 w-10" onClick={() => removeParam(param.id)}>
                     <X size={16} />
                   </Button>
-                  {index === params.length - 1 && (
+                  {index === queryParams.length - 1 && (
                     <Button variant="outline" size="icon" className="h-10 w-10" onClick={addParam}>
                       <PlusCircle size={16} />
                     </Button>
@@ -86,7 +93,7 @@ export default function RequestForm() {
                 </div>
               </div>
             ))}
-            {params.length === 0 && (
+            {queryParams.length === 0 && (
               <Button variant="outline" className="gap-2" onClick={addParam}>
                 <PlusCircle size={16} />
                 Add Parameter
@@ -155,8 +162,8 @@ export default function RequestForm() {
             {bodyType === "json" && (
               <Textarea
                 className="font-mono h-48 resize-none"
-                value={jsonBody}
-                onChange={(e) => setJsonBody(e.target.value)}
+                value={requestBody}
+                onChange={(e) => setRequestBody(e.target.value)}
               />
             )}
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/src/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
@@ -12,7 +12,6 @@ export default function VerifyPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isVerified, setIsVerified] = useState(false)
   const [error, setError] = useState("")
-  const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
   const { toast } = useToast()
@@ -26,7 +25,7 @@ export default function VerifyPage() {
       }
 
       try {
-        const response = await fetch("/auth/verify-registration", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/verify-registration`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
