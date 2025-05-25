@@ -83,16 +83,16 @@ export default function InsightsPanel() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Average</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">Average</span>
                     <span className="text-sm font-medium">{mockInsightData.avgResponseTime}ms</span>
                   </div>
                   <Progress value={30} className="h-2" />
-                  <div className="text-xs text-gray-500">Faster than 70% of your requests</div>
+                  <div className="text-xs text-zinc-500">Faster than 70% of your requests</div>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Slowest</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">Slowest</span>
                     <span className="text-sm font-medium">{mockInsightData.slowestResponse}ms</span>
                   </div>
                   <Progress value={80} className="h-2" />
@@ -110,11 +110,11 @@ export default function InsightsPanel() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Current</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">Current</span>
                     <span className="text-sm font-medium">{(mockInsightData.errorRate * 100).toFixed(1)}%</span>
                   </div>
                   <Progress value={mockInsightData.errorRate * 100} className="h-2" />
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-zinc-500">
                     {mockInsightData.errorRate === 0
                       ? "No errors detected in recent requests"
                       : `${Object.entries(mockInsightData.statusCodeDistribution)
@@ -125,11 +125,11 @@ export default function InsightsPanel() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Payload Size</span>
+                    <span className="text-sm text-zinc-600 dark:text-zinc-400">Payload Size</span>
                     <span className="text-sm font-medium">{mockInsightData.avgPayloadSizeKB} KB</span>
                   </div>
                   <Progress value={45} className="h-2" />
-                  <div className="text-xs text-gray-500">Average size across all requests</div>
+                  <div className="text-xs text-zinc-500">Average size across all requests</div>
                 </div>
               </CardContent>
             </Card>
@@ -150,7 +150,7 @@ export default function InsightsPanel() {
                       className="w-full bg-primary/80 rounded-t"
                       style={{ height: `${(output.time / mockInsightData.slowestResponse) * 100}%` }}
                     ></div>
-                    <div className="text-xs text-gray-500 mt-1">{output.time}ms</div>
+                    <div className="text-xs text-zinc-500 mt-1">{output.time}ms</div>
                   </div>
                 ))}
               </div>
@@ -174,11 +174,11 @@ export default function InsightsPanel() {
                       <div className="flex items-center gap-2">
                         <Badge
                           variant="secondary"
-                          className={statusColors[code as keyof typeof statusColors] || "bg-gray-100 text-gray-700"}
+                          className={statusColors[code as keyof typeof statusColors] || "bg-zinc-100 text-zinc-700"}
                         >
                           {code}
                         </Badge>
-                        <span className="text-sm text-gray-600 dark:text-gray-400">
+                        <span className="text-sm text-zinc-600 dark:text-zinc-400">
                           {code === "200"
                             ? "OK"
                             : code === "201"
@@ -219,9 +219,9 @@ export default function InsightsPanel() {
                   <div key={index} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">{header.name}</span>
-                      <span className="text-xs text-gray-500">{header.count} requests</span>
+                      <span className="text-xs text-zinc-500">{header.count} requests</span>
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900 p-2 rounded">
+                    <div className="text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900 p-2 rounded">
                       {header.value}
                     </div>
                   </div>
@@ -249,17 +249,17 @@ export default function InsightsPanel() {
                           variant="secondary"
                           className={
                             statusColors[output.status.toString() as keyof typeof statusColors] ||
-                            "bg-gray-100 text-gray-700"
+                            "bg-zinc-100 text-zinc-700"
                           }
                         >
                           {output.status}
                         </Badge>
-                        <span className="text-xs text-gray-500">{formatDate(output.timestamp)}</span>
+                        <span className="text-xs text-zinc-500">{formatDate(output.timestamp)}</span>
                       </div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div className="text-gray-500">Response time:</div>
+                        <div className="text-zinc-500">Response time:</div>
                         <div className="font-medium">{output.time}ms</div>
-                        <div className="text-gray-500">Payload size:</div>
+                        <div className="text-zinc-500">Payload size:</div>
                         <div className="font-medium">{output.size} KB</div>
                       </div>
                     </div>

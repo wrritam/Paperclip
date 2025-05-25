@@ -70,14 +70,14 @@ export default function VerifyPage() {
           {isLoading ? (
             <div className="flex flex-col items-center space-y-4">
               <Loader2 className="h-12 w-12 animate-spin text-primary" />
-              <p className="text-center text-sm text-gray-500">Verifying your email address...</p>
+              <p className="text-center text-sm text-zinc-500">Verifying your email address...</p>
             </div>
           ) : isVerified ? (
             <div className="flex flex-col items-center space-y-4">
               <CheckCircle className="h-12 w-12 text-green-500" />
               <div className="text-center">
                 <h3 className="text-lg font-medium">Email verified successfully</h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-zinc-500">
                   Your email has been verified. You can now log in to your account.
                 </p>
               </div>
@@ -87,7 +87,7 @@ export default function VerifyPage() {
               <XCircle className="h-12 w-12 text-red-500" />
               <div className="text-center">
                 <h3 className="text-lg font-medium">Verification failed</h3>
-                <p className="text-sm text-gray-500">{error || "The verification link is invalid or has expired."}</p>
+                <p className="text-sm text-zinc-500">{error || "The verification link is invalid or has expired."}</p>
               </div>
             </div>
           )}

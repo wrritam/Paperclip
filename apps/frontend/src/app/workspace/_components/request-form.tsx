@@ -44,9 +44,9 @@ export default function RequestForm() {
   }
 
   return (
-    <div className="border-b border-gray-200">
+    <div className="border-b border-zinc-200">
       <Tabs defaultValue="params">
-        <TabsList className="px-4 border-b rounded-none justify-start">
+        <TabsList className="px-4 border-b rounded-none justify-start bg-gray-100 w-full">
           <TabsTrigger value="params" className="data-[state=active]:bg-white">
             Query Params
           </TabsTrigger>

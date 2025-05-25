@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -6,65 +8,65 @@
   :root {
     --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
 
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 0 0% 100%; /* White */
+    --foreground: 222.2 84% 4.9%; /* Very Dark Blue */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%; /* White */
+    --card-foreground: 222.2 84% 4.9%; /* Very Dark Blue */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%; /* White */
+    --popover-foreground: 222.2 84% 4.9%; /* Very Dark Blue */
 
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 221 83% 53%; /* Blue */
+    --primary-foreground: 210 40% 98%; /* Light Grey */
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96.1%; /* Lighter Grey */
+    --secondary-foreground: 222.2 47.4% 11.2%; /* Dark Greyish Blue */
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96.1%; /* Lighter Grey */
+    --muted-foreground: 215.4 16.3% 46.9%; /* Medium Grey */
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96.1%; /* Lighter Grey */
+    --accent-foreground: 222.2 47.4% 11.2%; /* Dark Greyish Blue */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%; /* Red */
+    --destructive-foreground: 210 40% 98%; /* Light Grey */
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
+    --border: 214.3 31.8% 91.4%; /* Very Light Grey */
+    --input: 214.3 31.8% 91.4%; /* Very Light Grey */
+    --ring: 221 83% 53%; /* Blue */
 
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 8%; /* zinc Dark Grey */
+    --foreground: 0 0% 98%; /* zinc Light Grey */
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 8%; /* zinc Dark Grey */
+    --card-foreground: 0 0% 98%; /* zinc Light Grey */
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 8%; /* zinc Dark Grey */
+    --popover-foreground: 0 0% 98%; /* zinc Light Grey */
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 217 91% 60%; /* (Kept as is - Blue) */
+    --primary-foreground: 0 0% 11.2%; /* zinc Very Dark Grey */
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 17.5%; /* zinc Dark Grey */
+    --secondary-foreground: 0 0% 98%; /* zinc Light Grey */
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 17.5%; /* zinc Dark Grey */
+    --muted-foreground: 0 0% 65.1%; /* zinc Medium Light Grey */
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 0 0% 17.5%; /* zinc Dark Grey */
+    --accent-foreground: 0 0% 98%; /* zinc Light Grey */
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%; /* (Kept as is - Dark Red) */
+    --destructive-foreground: 0 0% 98%; /* zinc Light Grey */
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --border: 0 0% 17.5%; /* zinc Dark Grey */
+    --input: 0 0% 17.5%; /* zinc Dark Grey */
+    --ring: 224.3 76.3% 48%; /* (Kept as is - Medium Blue) */
   }
 }
 

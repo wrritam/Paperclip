@@ -185,8 +185,8 @@ export default function RequestsTable({
                     {request.method}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm text-gray-500">{request.url}</TableCell>
-                <TableCell className="text-sm text-gray-500">{request.lastRun}</TableCell>
+                <TableCell className="text-sm text-zinc-500">{request.url}</TableCell>
+                <TableCell className="text-sm text-zinc-500">{request.lastRun}</TableCell>
                 <TableCell>
                   <Badge variant="secondary" className={cn(statusColors[request.status as keyof typeof statusColors])}>
                     {request.status}
@@ -200,7 +200,7 @@ export default function RequestsTable({
                       <span>{request.insights}</span>
                     </div>
                   ) : (
-                    <span className="text-gray-400">-</span>
+                    <span className="text-zinc-400">-</span>
                   )}
                 </TableCell>
                 <TableCell className="text-right">

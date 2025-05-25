@@ -2,15 +2,15 @@
 
 import Link from "next/link"
 import { Button } from "@/src/components/ui/button"
-import { ModeToggle } from "@/src/components/mode-toggle"
 import { usePathname } from "next/navigation"
 import { cn } from "@/src/lib/utils"
+import ThemeToggle from "./theme-toggle"
 
 export default function Navbar() {
   const pathname = usePathname()
 
   return (
-    <header className="border-b border-gray-200 bg-white dark:bg-gray-950">
+    <header className="border-b border-zinc-200/70 dark:border-zinc-700/30 bg-zinc-200/80 dark:bg-zinc-950">
       <div className="container flex h-16 items-center px-4">
         <Link href="/" className="flex items-center gap-2">
           <svg
@@ -32,8 +32,8 @@ export default function Navbar() {
             <Button
               variant="ghost"
               className={cn(
-                "text-gray-700 dark:text-gray-300",
-                pathname === "/dashboard" && "bg-gray-100 dark:bg-gray-800",
+                "text-zinc-700 dark:text-zinc-300",
+                pathname === "/dashboard" && "bg-zinc-100 dark:bg-zinc-800",
               )}
             >
               Dashboard
@@ -43,14 +43,14 @@ export default function Navbar() {
             <Button
               variant="ghost"
               className={cn(
-                "text-gray-700 dark:text-gray-300",
-                pathname === "/workspace" && "bg-gray-100 dark:bg-gray-800",
+                "text-zinc-700 dark:text-zinc-300",
+                pathname === "/workspace" && "bg-zinc-100 dark:bg-zinc-800",
               )}
             >
               Workspace
             </Button>
           </Link>
-          <ModeToggle />
+          <ThemeToggle />
         </nav>
       </div>
     </header>

@@ -73,7 +73,7 @@ export default function RecentActivity() {
             <AvatarFallback className="bg-primary/10 text-primary text-xs">{activity.user}</AvatarFallback>
           </Avatar>
           <div className="flex-1 space-y-1">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <div className="text-sm text-zinc-700 dark:text-zinc-300">
               <span className="font-medium">You</span> {activity.action}{" "}
               <span className="font-medium">{activity.request}</span>
               {activity.method && (
@@ -98,8 +98,8 @@ export default function RecentActivity() {
                   </Badge>
                 </>
               )}
-            </p>
-            <p className="text-xs text-gray-500">{activity.time}</p>
+            </div>
+            <p className="text-xs text-zinc-500">{activity.time}</p>
           </div>
         </div>
       ))}

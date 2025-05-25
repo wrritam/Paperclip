@@ -112,7 +112,7 @@ export default function AIPanel() {
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-4">
-          <p className="text-sm text-gray-700 dark:text-gray-300">{mockAiSuggestions.summary}</p>
+          <p className="text-sm text-zinc-700 dark:text-zinc-300">{mockAiSuggestions.summary}</p>
         </CardContent>
       </Card>
 
@@ -149,22 +149,22 @@ export default function AIPanel() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-4">
-                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{tip.description}</p>
+                    <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">{tip.description}</p>
                     {tip.codeSnippet && (
                       <div className="relative">
-                        <pre className="text-xs bg-gray-800 text-gray-100 p-3 rounded-md overflow-x-auto">
+                        <pre className="text-xs bg-zinc-800 text-zinc-100 p-3 rounded-md overflow-x-auto">
                           {tip.codeSnippet}
                         </pre>
                         <Button
                           size="icon"
                           variant="ghost"
-                          className="absolute top-2 right-2 h-6 w-6 bg-gray-700 hover:bg-gray-600"
+                          className="absolute top-2 right-2 h-6 w-6 bg-zinc-700 hover:bg-zinc-600"
                           onClick={() => handleCopy(`tip-${index}`, tip.codeSnippet || "")}
                         >
                           {copied === `tip-${index}` ? (
                             <Check size={14} className="text-green-400" />
                           ) : (
-                            <Copy size={14} className="text-gray-300" />
+                            <Copy size={14} className="text-zinc-300" />
                           )}
                         </Button>
                       </div>
@@ -189,22 +189,22 @@ export default function AIPanel() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-4">
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{tip.description}</p>
+                      <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">{tip.description}</p>
                       {tip.codeSnippet && (
                         <div className="relative">
-                          <pre className="text-xs bg-gray-800 text-gray-100 p-3 rounded-md overflow-x-auto">
+                          <pre className="text-xs bg-zinc-800 text-zinc-100 p-3 rounded-md overflow-x-auto">
                             {tip.codeSnippet}
                           </pre>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="absolute top-2 right-2 h-6 w-6 bg-gray-700 hover:bg-gray-600"
+                            className="absolute top-2 right-2 h-6 w-6 bg-zinc-700 hover:bg-zinc-600"
                             onClick={() => handleCopy(`opt-${index}`, tip.codeSnippet || "")}
                           >
                             {copied === `opt-${index}` ? (
                               <Check size={14} className="text-green-400" />
                             ) : (
-                              <Copy size={14} className="text-gray-300" />
+                              <Copy size={14} className="text-zinc-300" />
                             )}
                           </Button>
                         </div>
@@ -229,22 +229,22 @@ export default function AIPanel() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-4">
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">{tip.description}</p>
+                      <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-3">{tip.description}</p>
                       {tip.codeSnippet && (
                         <div className="relative">
-                          <pre className="text-xs bg-gray-800 text-gray-100 p-3 rounded-md overflow-x-auto">
+                          <pre className="text-xs bg-zinc-800 text-zinc-100 p-3 rounded-md overflow-x-auto">
                             {tip.codeSnippet}
                           </pre>
                           <Button
                             size="icon"
                             variant="ghost"
-                            className="absolute top-2 right-2 h-6 w-6 bg-gray-700 hover:bg-gray-600"
+                            className="absolute top-2 right-2 h-6 w-6 bg-zinc-700 hover:bg-zinc-600"
                             onClick={() => handleCopy(`sec-${index}`, tip.codeSnippet || "")}
                           >
                             {copied === `sec-${index}` ? (
                               <Check size={14} className="text-green-400" />
                             ) : (
-                              <Copy size={14} className="text-gray-300" />
+                              <Copy size={14} className="text-zinc-300" />
                             )}
                           </Button>
                         </div>

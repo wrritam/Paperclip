@@ -21,7 +21,7 @@ const config = {
     extend: {
       fontFamily: {
         sans: ["var(--font-jakarta)"],
-        mono: ["var(--font-inter)"],
+        mono: ["var(--font-azeret)"],
       },
       colors: {
         border: "hsl(var(--border))",

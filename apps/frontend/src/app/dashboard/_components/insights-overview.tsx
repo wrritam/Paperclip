@@ -12,7 +12,7 @@ export default function InsightsOverview() {
             </div>
             <div>
               <div className="text-2xl font-bold">127ms</div>
-              <div className="text-sm text-gray-500">Avg. Response Time</div>
+              <div className="text-sm text-zinc-500">Avg. Response Time</div>
             </div>
           </div>
         </CardContent>
@@ -26,7 +26,7 @@ export default function InsightsOverview() {
             </div>
             <div>
               <div className="text-2xl font-bold">24</div>
-              <div className="text-sm text-gray-500">Requests with Insights</div>
+              <div className="text-sm text-zinc-500">Requests with Insights</div>
             </div>
           </div>
         </CardContent>
@@ -40,7 +40,7 @@ export default function InsightsOverview() {
             </div>
             <div>
               <div className="text-2xl font-bold">3</div>
-              <div className="text-sm text-gray-500">Error Responses</div>
+              <div className="text-sm text-zinc-500">Error Responses</div>
             </div>
           </div>
         </CardContent>

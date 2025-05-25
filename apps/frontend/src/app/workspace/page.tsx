@@ -8,11 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ScrollArea } from "@/src/components/ui/scroll-area"
 import { Badge } from "@/src/components/ui/badge"
 import { PlusCircle, Send, Code, BarChart2, Sparkles, Trash2, Save, FolderPlus } from "lucide-react"
-import RequestList from "@/src/components/workspace/request-list"
-import ResponsePanel from "@/src/components/workspace/response-panel"
-import InsightsPanel from "@/src/components/workspace/insights-panel"
-import AIPanel from "@/src/components/workspace/ai-panel"
-import RequestForm from "@/src/components/workspace/request-form"
+import RequestList from "@/src/app/workspace/_components/request-list"
+import ResponsePanel from "@/src/app/workspace/_components/response-panel"
+import InsightsPanel from "@/src/app/workspace/_components/insights-panel"
+import AIPanel from "@/src/app/workspace/_components/ai-panel"
+import RequestForm from "@/src/app/workspace/_components/request-form"
 import {
   Dialog,
   DialogContent,
@@ -63,9 +63,9 @@ export default function Workspace() {
   return (
     <div className="flex h-[calc(100vh-64px)] bg-white">
       {/* Sidebar */}
-      <div className="w-72 border-r border-gray-200 flex flex-col">
+      <div className="w-72 border-r border-zinc-200 flex flex-col">
         <div className="p-4 flex justify-between items-center">
-          <h2 className="font-medium text-gray-800">Requests</h2>
+          <h2 className="font-medium text-zinc-800">Requests</h2>
           <Dialog open={showNewRequestDialog} onOpenChange={setShowNewRequestDialog}>
             <DialogTrigger asChild>
               <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
@@ -115,10 +115,10 @@ export default function Workspace() {
 
         <div className="p-3 px-4">
           <div className="relative">
-            <Input className="pl-8 bg-gray-50 border-gray-200" placeholder="Search requests..." />
+            <Input className="pl-8 bg-zinc-50 border-zinc-200" placeholder="Search requests..." />
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500"
+              className="absolute left-2.5 top-2.5 h-4 w-4 text-zinc-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -137,8 +137,8 @@ export default function Workspace() {
           <RequestList activeRequest={activeRequest} setActiveRequest={setActiveRequest} />
         </ScrollArea>
 
-        <div className="p-3 border-t border-gray-200">
-          <Button variant="outline" className="w-full justify-start gap-2 text-gray-700">
+        <div className="p-3 border-t border-zinc-200">
+          <Button variant="outline" className="w-full justify-start gap-2 text-zinc-700">
             <FolderPlus size={16} />
             <span>New Collection</span>
           </Button>
@@ -148,7 +148,7 @@ export default function Workspace() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Request Bar */}
-        <div className="p-4 border-b border-gray-200 flex items-center gap-3">
+        <div className="p-4 border-b border-zinc-200 flex items-center gap-3">
           <Select defaultValue="GET">
             <SelectTrigger className="w-28">
               <SelectValue placeholder="Method" />
