@@ -1,10 +1,10 @@
 "use client"
 
 import { useState, Dispatch, SetStateAction } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
-import { Input } from "@/src/components/ui/input"
-import { Button } from "@/src/components/ui/button"
-import { Textarea } from "@/src/components/ui/textarea"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import { PlusCircle, X } from "lucide-react"
 
 type Props = {
@@ -16,14 +16,14 @@ type Props = {
   setRequestBody: Dispatch<SetStateAction<string>>;
 }
 
-export default function RequestForm({
+export const RequestForm = ({
   queryParams,
   setQueryParams,
   headers,
   setHeaders,
   requestBody,
   setRequestBody,
-}: Props) {
+}: Props) => {
   const [bodyType, setBodyType] = useState("json")
 
   const addParam = () => {

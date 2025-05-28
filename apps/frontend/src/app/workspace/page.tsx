@@ -1,69 +1,84 @@
 "use client"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
-import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select"
-import { Badge } from "@/src/components/ui/badge"
-import { Send, Code, BarChart2, Sparkles, Trash2, Save } from "lucide-react"
-import ResponsePanel from "@/src/app/workspace/_components/response-panel"
-import InsightsPanel from "@/src/app/workspace/_components/insights-panel"
-import AIPanel from "@/src/app/workspace/_components/ai-panel"
-import RequestForm from "@/src/app/workspace/_components/request-form"
-import { useToast } from "@/src/components/ui/use-toast"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { Send, Code, BarChart2, Sparkles, Trash2, Save, Loader2 } from "lucide-react"
+import { ResponsePanel } from "@/app/workspace/_components/response-panel"
+import { InsightsPanel } from "@/app/workspace/_components/insights-panel"
+import { AIPanel } from "@/app/workspace/_components/ai-panel"
+import { RequestForm } from "@/app/workspace/_components/request-form"
 import { Sidebar } from "./_components/sidebar"
 import { useState } from 'react';
-import { HttpMethod } from "./types"
+import { AiAnalysis, ApiInsight, HttpMethod } from "./types"
+import { RunRequest } from "./actions/request-actions"
+import useToast from "@/hooks/use-toast"
 
 export default function Workspace() {
 
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   const handleDeleteRequest = () => {
-    toast({
-      title: "Request deleted",
-      description: "The request has been deleted successfully",
+    setMethod(HttpMethod.GET);
+    setUrl('https://jsonplaceholder.typicode.com/todos');
+    setQueryParams([]);
+    setHeaders([]);
+    setRequestBody('');
+    setResponseData(null);
+    setAIAnalysis(undefined);
+    setInsights(undefined);
+    setIsLoading(false);
+
+    showToast({
+      message: "Request deleted",
+      description: "All request data has been cleared successfully",
+      type: "success"
     })
   }
 
   const [method, setMethod] = useState<HttpMethod>(HttpMethod.GET);
-  const [url, setUrl] = useState<string>('https://api.example.com/users');
+  const [url, setUrl] = useState<string>('https://jsonplaceholder.typicode.com/todos');
   const [queryParams, setQueryParams] = useState<Array<{ id: string; key: string; value: string }>>([]);
   const [headers, setHeaders] = useState<Array<{ id: string; key: string; value: string }>>([]);
   const [requestBody, setRequestBody] = useState<string>('');
+  const [responseData, setResponseData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [aiAnalysis, setAIAnalysis] = useState<AiAnalysis | undefined>(undefined);
+  const [insights, setInsights] = useState<ApiInsight | null | undefined>(undefined)
 
   const handleSendRequest = async () => {
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/run-request`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          method,
-          url,
-          queryParams,
-          headers,
-          body: requestBody,
-        }),
-      });
+    setIsLoading(true);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+    const result = await RunRequest({
+      method,
+      url,
+      queryParams,
+      headers,
+      body: requestBody,
+    });
 
-      const data = await response.json();
-      console.log('Request successful:', data);
+    console.log("first", result);
 
-    } catch (error) {
-      console.error('Error sending request:', error);
-      toast({
-        title: "Error sending request",
-        description: error instanceof Error ? error.message : 'An unknown error occurred',
-        variant: "destructive",
+    if (result.success) {
+      setResponseData(result.data);
+      setAIAnalysis(result.aiAnalysis);
+      setInsights(result.insight)
+    } else {
+      setResponseData(null);
+      setAIAnalysis(undefined);
+      showToast({
+        message: "Error sending request",
+        description: result.error || 'An unknown error occurred',
+        type: "error",
       });
     }
+
+    setIsLoading(false);
   };
+
+  console.log("workspace", aiAnalysis)
 
   return (
     <div className="flex h-[calc(100vh-64px)] bg-white">
@@ -73,7 +88,6 @@ export default function Workspace() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Request Bar */}
         <div className="p-4 border-b border-zinc-200 flex items-center gap-3">
-          {/* Use the enum for the Select component */}
           <Select value={method} onValueChange={(value) => setMethod(value as HttpMethod)}>
             <SelectTrigger className="w-28">
               <SelectValue placeholder="Method" />
@@ -100,9 +114,19 @@ export default function Workspace() {
               <span className="hidden sm:inline">Save</span>
             </Button>
 
-            <Button className="gap-2" onClick={handleSendRequest}>
-              <Send size={16} />
-              <span className="hidden sm:inline">Send</span>
+            <Button
+              className="gap-2"
+              onClick={handleSendRequest}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Send size={16} />
+              )}
+              <span className="hidden sm:inline">
+                {isLoading ? "Sending..." : "Send"}
+              </span>
             </Button>
           </div>
         </div>
@@ -137,15 +161,15 @@ export default function Workspace() {
             </TabsList>
 
             <TabsContent value="response" className="flex-1 p-0 overflow-auto data-[state=active]:flex">
-              <ResponsePanel />
+              <ResponsePanel responseData={responseData} isLoading={isLoading} />
             </TabsContent>
 
             <TabsContent value="insights" className="flex-1 p-0 overflow-auto data-[state=active]:flex">
-              <InsightsPanel />
+              <InsightsPanel insights={insights} isLoading={isLoading}/>
             </TabsContent>
 
             <TabsContent value="ai" className="flex-1 p-0 overflow-auto data-[state=active]:flex">
-              <AIPanel />
+              <AIPanel aiAnalysis={aiAnalysis} isLoading={isLoading} />
             </TabsContent>
           </Tabs>
         </div>

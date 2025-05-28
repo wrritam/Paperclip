@@ -33,15 +33,34 @@ export const validateRunRequest = (
   next: NextFunction
 ) => {
   try {
-    runRequestSchema.parse(req.body)
-    next()
+    console.log('🔍 Validation Debug:', {
+      hasBody: !!req.body,
+      method: req.body?.method,
+      url: req.body?.url,
+      bodyKeys: Object.keys(req.body || {})
+    });
+
+    const result = runRequestSchema.safeParse(req.body);
+
+    if (!result.success) {
+      console.error('❌ Validation failed:', result.error.format());
+      res.status(400).json({
+        error: 'Invalid request data',
+        details: result.error.format(),
+      });
+      return;
+    }
+
+    console.log('✅ Validation passed');
+    next();
   } catch (error) {
+    console.error('💥 Validation error:', error);
     res.status(400).json({
       error: 'Invalid request data',
       details: error instanceof z.ZodError ? error.errors : 'Validation failed',
-    })
+    });
   }
-}
+};
 
 export const validateSearchLogs = (
   req: Request,

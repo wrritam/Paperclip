@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Azeret_Mono } from "next/font/google"
 import "./globals.css"
-import { ThemeProvider } from "@/src/components/global/theme-provider"
-import { Toaster } from "@/src/components/ui/toaster"
-import Navbar from "@/src/components/global/navbar"
+import { ThemeProvider } from "@/components/global/theme-provider"
+import Navbar from "@/components/global/navbar"
 import { type ReactNode } from "react"
+import { Toaster } from "@/components/ui/sonner"
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],

@@ -1,7 +1,7 @@
 import express from 'express'
 const authRouter = express.Router()
 
-import { rateLimiterforAuth } from '../middleware/rate-limiter'
+import { rateLimiterforAuth } from '../services/rate-limiter'
 import { register } from '../controllers/auth/register'
 import { verifyRegistration } from '../controllers/auth/verify-registration'
 import { login } from '../controllers/auth/login'

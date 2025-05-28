@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 
-import { rateLimiterforAPIs } from '../middleware/rate-limiter'
+import { rateLimiterforAPIs } from '../services/rate-limiter'
 import {
   validateRunRequest,
   validateSearchLogs,

@@ -1,11 +1,11 @@
 "use client"
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table"
-import { Badge } from "@/src/components/ui/badge"
-import { Button } from "@/src/components/ui/button"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { ArrowUpRight, BarChart2 } from "lucide-react"
 import Link from "next/link"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/utils"
 
 interface RequestsTableProps {
   searchQuery: string

@@ -1,13 +1,15 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "@/src/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
-import { cn } from "@/src/lib/utils"
-import ThemeToggle from "./theme-toggle"
+import { cn } from "@/lib/utils"
+import { SignOutButton } from "@/app/auth/sign-out/sign-out-button"
 
 export default function Navbar() {
   const pathname = usePathname()
+
+  const isAuthPage = pathname.includes("/auth")
 
   return (
     <header className="border-b border-zinc-200/70 dark:border-zinc-700/30 bg-zinc-200/80 dark:bg-zinc-950">
@@ -50,7 +52,9 @@ export default function Navbar() {
               Workspace
             </Button>
           </Link>
-          <ThemeToggle />
+
+          {/* Conditional rendering for SignOutButton */}
+          {!isAuthPage && <SignOutButton />}
         </nav>
       </div>
     </header>

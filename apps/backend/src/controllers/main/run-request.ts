@@ -1,59 +1,103 @@
 import axios, { AxiosRequestHeaders } from "axios";
 import { Response } from "express";
+import { z } from "zod";
 import prisma from "../../db/db.config";
 import { getInsights } from "../../services/insights";
 import { generateAISuggestionsForAPI } from "../../services/ai-suggestion";
 import { CustomRequest } from "../../types";
 
-const allowedMethods = ["GET", "POST", "PUT", "DELETE"];
+const RunRequestSchema = z.object({
+  method: z.enum(["GET", "POST", "PUT", "DELETE", "get", "post", "put", "delete"]),
+  url: z.string().url("Invalid URL format"),
+  headers: z.record(z.string()).optional().default({}),
+  body: z.any().optional().default({})
+});
 
-interface RunRequestBody {
-  method: string;
-  url: string;
-  headers?: AxiosRequestHeaders;
-  body?: any;
+interface SuccessResponse {
+  status: number;
+  headers: any;
+  body: any;
+  responseTimeMs: number;
+  responseSizeKB: number;
+  meta: {
+    method: string;
+    url: string;
+    ip: string;
+    userAgent: string;
+    timestamp: string;
+  };
+  insight: any | null;
+  aiAnalysis: {
+    summary: string;
+    aiTips: Array<{
+      title: string;
+      description: string;
+      codeSnippet: string | null;
+    }>;
+  } | null;
+}
+
+// Error response type
+interface ErrorResponse {
+  message: string;
+  error?: string;
+  errors?: any;
+  meta?: {
+    method?: string;
+    url?: string;
+    ip: string;
+    userAgent: string;
+    timestamp: string;
+  };
+  insight?: null;
+  aiAnalysis?: null;
 }
 
 export const runRequest = async (
   req: CustomRequest,
   res: Response
 ): Promise<void> => {
-  const { method, url, headers = {}, body = {} } = req.body as RunRequestBody;
+  // Validate request body with Zod
+  const parseResult = RunRequestSchema.safeParse(req.body);
 
-  if (!method || !url) {
-    res.status(400).json({ message: "Method and URL are required" });
+  if (!parseResult.success) {
+    const errorResponse: ErrorResponse = {
+      message: "Invalid request body format",
+      errors: parseResult.error.format(),
+    };
+    res.status(400).json(errorResponse);
     return;
   }
 
-  if (!allowedMethods.includes(method.toUpperCase())) {
-    res.status(400).json({
-      message: "Only GET, POST, PUT, and DELETE methods are allowed for now",
-    });
-    return;
-  }
+  const { method, url, headers, body } = parseResult.data;
 
+  // Check user authentication
   if (!req.user?.email) {
-    res.status(401).json({ message: "Unauthorized: No user found" });
+    const errorResponse: ErrorResponse = {
+      message: "Unauthorized: No user found"
+    };
+    res.status(401).json(errorResponse);
     return;
   }
 
+  // Find and verify user
   const foundUser = await prisma.user.findUnique({
     where: { email: req.user.email },
   });
 
   if (!foundUser || !foundUser.is_verified) {
-    res.status(403).json({ message: "User not verified or not found" });
+    const errorResponse: ErrorResponse = {
+      message: "User not verified or not found"
+    };
+    res.status(403).json(errorResponse);
     return;
   }
 
-  const ip =
-    (req.headers["x-forwarded-for"] as string) ||
-    req.socket.remoteAddress ||
-    "";
+  const ip = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress || "";
   const userAgent = req.headers["user-agent"] || "unknown";
   const startTime = Date.now();
 
-  // Move request finding/creation outside try-catch
+  // Find or create request record
   let savedRequest = await prisma.request.findFirst({
     where: {
       userId: foundUser.id,
@@ -80,19 +124,19 @@ export const runRequest = async (
   }
 
   try {
+    // Make the actual HTTP request
     const response = await axios.request({
-      method,
+      method: method.toLowerCase(),
       url,
       headers,
       data: ["POST", "PUT"].includes(method.toUpperCase()) ? body : undefined,
-      validateStatus: () => true,
+      validateStatus: () => true, // Don't throw on HTTP error status codes
     });
 
     const responseTime = Date.now() - startTime;
-    const responseSizeKB =
-      Buffer.byteLength(JSON.stringify(response.data)) / 1024;
+    const responseSizeKB = Buffer.byteLength(JSON.stringify(response.data)) / 1024;
 
-    // Combine log creation with request update
+    // Create request log and get total log count
     const [requestLog, totalLogs] = await Promise.all([
       prisma.requestLog.create({
         data: {
@@ -112,16 +156,16 @@ export const runRequest = async (
       }),
     ]);
 
-    // Only fetch insights if we have enough logs
+    // Generate insights and AI analysis if we have enough logs
     let insight = null;
     let aiAnalysis = null;
+
     if (totalLogs >= 5) {
       insight = await getInsights(savedRequest.id);
 
       if (insight) {
-        // Check if we need to generate new AI analysis
-        const shouldGenerateNewAnalysis =
-          !savedRequest.summary || totalLogs % 5 === 0; // Generate new analysis every 5 requests
+        // Generate new AI analysis every 5 requests or if no summary exists
+        const shouldGenerateNewAnalysis = !savedRequest.summary || totalLogs % 5 === 0;
 
         if (shouldGenerateNewAnalysis) {
           aiAnalysis = await generateAISuggestionsForAPI(method, url, {
@@ -129,10 +173,7 @@ export const runRequest = async (
             errorRate: insight.errorRate,
             slowestResponse: insight.slowestResponse,
             avgPayloadSizeKB: insight.avgPayloadSizeKB,
-            statusCodeDistribution: insight.statusCodeDistribution as Record<
-              string,
-              number
-            >,
+            statusCodeDistribution: insight.statusCodeDistribution as Record<string, number>,
           });
 
           // Update request with new AI analysis
@@ -158,14 +199,14 @@ export const runRequest = async (
     }
 
     // Return success response
-    res.status(200).json({
+    const successResponse: SuccessResponse = {
       status: response.status,
       headers: response.headers,
       body: response.data,
       responseTimeMs: responseTime,
       responseSizeKB: parseFloat(responseSizeKB.toFixed(2)),
       meta: {
-        method,
+        method: method.toUpperCase(),
         url,
         ip,
         userAgent,
@@ -175,14 +216,20 @@ export const runRequest = async (
       aiAnalysis: savedRequest
         ? {
             summary: savedRequest.summary,
-            aiTips: savedRequest.aiTips,
+            aiTips: savedRequest.aiTips.map(tip => ({
+              title: tip.title,
+              description: tip.description,
+              codeSnippet: tip.codeSnippet,
+            })),
           }
         : null,
-    });
+    };
+
+    res.status(200).json(successResponse);
   } catch (error: any) {
     const responseTime = Date.now() - startTime;
 
-    // Just create the log entry for the error
+    // Log the error
     await prisma.requestLog.create({
       data: {
         requestId: savedRequest.id,
@@ -197,12 +244,21 @@ export const runRequest = async (
       },
     });
 
-    res.status(500).json({
+    // Return error response
+    const errorResponse: ErrorResponse = {
       message: "Request Failed",
       error: error.message || "Unknown error",
-      meta: { method, url, ip, userAgent, timestamp: new Date().toISOString() },
+      meta: {
+        method: method.toUpperCase(),
+        url,
+        ip,
+        userAgent,
+        timestamp: new Date().toISOString(),
+      },
       insight: null,
       aiAnalysis: null,
-    });
+    };
+
+    res.status(500).json(errorResponse);
   }
 };

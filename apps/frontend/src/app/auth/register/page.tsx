@@ -5,12 +5,12 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
-import { Label } from "@/src/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { useToast } from "@/src/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
+import useToast from "@/hooks/use-toast"
 
 export default function RegisterPage() {
   const [name, setName] = useState("")
@@ -20,16 +20,16 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Passwords do not match",
+      showToast({
+        message: "Passwords do not match",
         description: "Please make sure your passwords match",
+        type: "error"
       })
       return
     }
@@ -50,16 +50,17 @@ export default function RegisterPage() {
         throw new Error(error.message || "Registration failed")
       }
 
-      toast({
-        title: "Registration successful",
+      showToast({
+        message: "Registration successful",
         description: "Please check your email to verify your account",
+        type: "success"
       })
 
       router.push("/auth/login")
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Registration failed",
+      showToast({
+        type: "error",
+        message: "Registration failed",
         description: error instanceof Error ? error.message : "Please try again later",
       })
     } finally {

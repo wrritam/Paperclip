@@ -1,6 +1,6 @@
 import { PlusCircle, FolderPlus, Search } from 'lucide-react'
-import RequestList from '@/src/app/workspace/_components/request-list'
-import { ScrollArea } from '@/src/components/ui/scroll-area'
+import RequestList from '@/app/workspace/_components/request-list'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Dialog,
   DialogContent,
@@ -9,19 +9,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/src/components/ui/dialog'
-import { Label } from '@/src/components/ui/label'
-import { Input } from '@/src/components/ui/input'
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/src/components/ui/select'
-import { Button } from '@/src/components/ui/button'
+} from '@/components/ui/select'
+import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import { useToast } from '@/src/hooks/use-toast'
+import { useToast } from '@/hooks/use-toast'
 
 type Props = {}
 
@@ -30,22 +30,21 @@ export const Sidebar = (props: Props) => {
   const [showNewRequestDialog, setShowNewRequestDialog] = useState(false)
   const [newRequestName, setNewRequestName] = useState('')
   const [newRequestMethod, setNewRequestMethod] = useState('GET')
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   const handleCreateRequest = () => {
     if (!newRequestName.trim()) {
-      toast({
-        title: 'Error',
-        description: 'Please enter a request name',
-        variant: 'destructive',
+      showToast({
+        message: "Error! Please enter a request name",
+        type: "error",
       })
       return
     }
 
-    // Here you would normally create the request in your backend
-    toast({
-      title: 'Request created',
+    showToast({
+      message: 'Request created',
       description: `Created new ${newRequestMethod} request: ${newRequestName}`,
+      type: "success",
     })
 
     setShowNewRequestDialog(false)

@@ -1,16 +1,15 @@
 "use client"
 
-import type React from "react"
-
-import { useState } from "react"
+import { type FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
-import { Label } from "@/src/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { useToast } from "@/src/components/ui/use-toast"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
+import { loginAction } from "@/app/auth/login/actions"
+import useToast from "@/hooks/use-toast"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -18,37 +17,31 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      })
+      const result = await loginAction(email, password);
 
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.message || "Login failed")
+      if (!result.success) {
+        throw new Error(result.message || "Login failed");
       }
 
-      toast({
-        title: "Login successful",
+      showToast({
+        message: "Login successful",
         description: "Redirecting to dashboard...",
+        type: "success"
       })
 
       router.push("/dashboard")
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Login failed",
+      showToast({
+        message: "Login failed",
         description: error instanceof Error ? error.message : "Please check your credentials and try again",
+        type: "error"
       })
     } finally {
       setIsLoading(false)

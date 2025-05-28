@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar"
-import { Badge } from "@/src/components/ui/badge"
-import { cn } from "@/src/lib/utils"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 
 const activities = [
   {

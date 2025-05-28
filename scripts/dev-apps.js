@@ -1,4 +1,3 @@
-const readline = require('readline')
 const { execSync } = require('child_process')
 const net = require('net')
 
@@ -15,8 +14,6 @@ const availableApps = {
   web: true,
   server: true,
 }
-
-const requiredApps = ['server']
 
 function parseArgs() {
   const args = process.argv.slice(2)

@@ -1,18 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
-import { Button } from "@/src/components/ui/button"
-import { Input } from "@/src/components/ui/input"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { BarChart3, Search, Clock, AlertTriangle, TrendingUp, ArrowUpRight, Filter, Plus } from "lucide-react"
 import Link from "next/link"
-import RequestsTable from "@/src/app/dashboard/_components/requests-table"
-import InsightsOverview from "@/src/app/dashboard/_components/insights-overview"
-import PerformanceChart from "@/src/app/dashboard/_components/performance-chart"
-import StatusDistribution from "@/src/app/dashboard/_components/status-distribution"
-import RecentActivity from "@/src/app/dashboard/_components/recent-activity"
-import { Badge } from "@/src/components/ui/badge"
+import RequestsTable from "@/app/dashboard/_components/requests-table"
+import InsightsOverview from "@/app/dashboard/_components/insights-overview"
+import PerformanceChart from "@/app/dashboard/_components/performance-chart"
+import StatusDistribution from "@/app/dashboard/_components/status-distribution"
+import RecentActivity from "@/app/dashboard/_components/recent-activity"
+import { Badge } from "@/components/ui/badge"
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("")

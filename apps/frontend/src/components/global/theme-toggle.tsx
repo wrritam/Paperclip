@@ -1,14 +1,14 @@
 "use client"
 
 import { Moon, Sun } from "lucide-react"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/utils"
 import { useTheme } from "next-themes"
 
 type Props = {
   className?: string
 }
 
-const ThemeToggle = ({ className }: Props) => {
+export const ThemeToggle = ({ className }: Props) => {
 
   const { resolvedTheme, setTheme } = useTheme()
   const isDark = resolvedTheme === "dark"
@@ -71,5 +71,3 @@ const ThemeToggle = ({ className }: Props) => {
     </div>
   )
 }
-
-export default ThemeToggle
