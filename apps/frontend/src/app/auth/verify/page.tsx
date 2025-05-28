@@ -5,8 +5,8 @@ import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
 import { Loader2, CheckCircle, XCircle } from "lucide-react"
+import useToast from "@/hooks/use-toast"
 
 export default function VerifyPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -14,7 +14,7 @@ export default function VerifyPage() {
   const [error, setError] = useState("")
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -39,15 +39,16 @@ export default function VerifyPage() {
         }
 
         setIsVerified(true)
-        toast({
-          title: "Email verified",
+        showToast({
+          type: "success",
+          message: "Email verified",
           description: "Your email has been verified successfully",
         })
       } catch (error) {
         setError(error instanceof Error ? error.message : "Verification failed")
-        toast({
-          variant: "destructive",
-          title: "Verification failed",
+        showToast({
+          type: "error",
+          message: "Verification failed",
           description: error instanceof Error ? error.message : "Please try again later",
         })
       } finally {
@@ -56,7 +57,7 @@ export default function VerifyPage() {
     }
 
     verifyToken()
-  }, [token, toast])
+  }, [token, showToast])
 
   return (
     <div className="flex min-h-screen items-center justify-center px-4 py-12">

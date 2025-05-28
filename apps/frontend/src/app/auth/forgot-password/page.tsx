@@ -8,14 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
 import { Loader2 } from "lucide-react"
+import useToast from "@/hooks/use-toast"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -32,14 +32,18 @@ export default function ForgotPasswordPage() {
 
       if (!response.ok) {
         const error = await response.json()
-        throw new Error(error.message || "Request failed")
+        showToast({
+          type: "error",
+          message: error.message,
+          description: error instanceof Error ? error.message : "Please try again later",
+        })
       }
 
       setIsSubmitted(true)
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Request failed",
+      showToast({
+        type: "error",
+        message: "Request failed",
         description: error instanceof Error ? error.message : "Please try again later",
       })
     } finally {

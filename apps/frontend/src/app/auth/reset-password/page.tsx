@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useToast } from "@/components/ui/use-toast"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
+import useToast from "@/hooks/use-toast"
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("")
@@ -20,24 +20,24 @@ export default function ResetPasswordPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get("token")
-  const { toast } = useToast()
+  const { showToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Passwords do not match",
+      showToast({
+        message: "Passwords do not match",
         description: "Please make sure your passwords match",
+        type: "warning"
       })
       return
     }
 
     if (!token) {
-      toast({
-        variant: "destructive",
-        title: "Invalid token",
+      showToast({
+        type: "error",
+        message: "Invalid token",
         description: "The reset link is invalid or has expired",
       })
       return
@@ -59,16 +59,17 @@ export default function ResetPasswordPage() {
         throw new Error(error.message || "Password reset failed")
       }
 
-      toast({
-        title: "Password reset successful",
+      showToast({
+        message: "Password reset successful",
         description: "Your password has been reset successfully",
+        type: "success"
       })
 
       router.push("/auth/login")
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Password reset failed",
+      showToast({
+        type: "error",
+        message: "Password reset failed",
         description: error instanceof Error ? error.message : "Please try again later",
       })
     } finally {
