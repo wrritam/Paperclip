@@ -19,7 +19,7 @@ app.use(
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('🧠 Paperclip Backend Server is Running!')
+  res.send('🧠 Paperclip Backend Server is Running at 4000!')
 })
 
 process.on('SIGTERM', async () => {
