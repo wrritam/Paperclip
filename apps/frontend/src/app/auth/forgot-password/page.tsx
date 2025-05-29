@@ -12,9 +12,9 @@ import { Loader2 } from "lucide-react"
 import useToast from "@/hooks/use-toast"
 
 export default function ForgotPasswordPage() {
-  const [email, setEmail] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [email, setEmail] = useState<string>("")
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
   const { showToast } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
